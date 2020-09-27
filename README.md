@@ -10,7 +10,7 @@ As stated in the Assignment_Instructions, the goal is to find the combination of
 bridges to build between cities where:
 * No bridges cross
 * No city can be reached by two bridges
-* The toll can be charded the maximum amount
+* The toll can be charged the maximum amount
 
 The definition for bridges crossing are if a < c && b > d or c < a && d > b
 
