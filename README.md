@@ -2,6 +2,8 @@
 This solution finds the optimal solution to the problem via exhaustive search
 
 This project was developed in Clion
+The solution consists of two files build.cpp and build.hpp
+The test file is build_test.cpp
 
 # The Problem
 As stated in the Assignment_Instructions, the goal is to find the combination of 
