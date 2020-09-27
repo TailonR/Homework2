@@ -16,7 +16,7 @@ The definition for bridges crossing are if a < c && b > d or c < a && d > b, wit
 
 # Key Highlights
 The biggest issue I had to tackle, that once solved everything fell into place, 
-was getting the correct combination of bridges to build.
+was getting the all the combinations of bridges to build, as well as all combinations that are allowed.
 This was done with two functions:
 ```c++
 std::vector<Bridges> allPossibleBridgeCombinations(const Bridges &bridges, std::vector<Bridges> &allBridgeCombos) {
