@@ -1,27 +1,32 @@
-//
-// Created by renew on 9/25/2020.
-//
+// build.cpp
+// Author: Tailon Russell
+// Date: 9/25/2020.
+// Purpose: The source file for the build function
+//    and various other helper functions
 
 #include <iostream>
 #include <algorithm>
 #include <cmath>
-#include <string>
 #include "../Header/build.h"
 
+// int build
+// given the number of west and east cities and a list of bridges
+//  return the max toll to charge of bridges built following client defined requirements
+// Pre: bridges needs to be a valid vector of ints
 int build(int w, int e, const Bridges &bridges) {
-    if (bridges.empty()) {
+    if (bridges.empty()) { // given no bridges
         return 0;
-    } else if (bridges.size() == 1) {
+    } else if (bridges.size() == 1) { // given one bridge
         return bridges[0][2];
-    } else if(bridges.size() == 2) {
-        if(bridges[0][0] == bridges[1][0] || bridges[0][1] == bridges[1][1]) {
+    } else if(bridges.size() == 2) { // given two bridges
+        if(doBridgesCross(bridges[0], bridges[1])) { // if bridges cross
             return std::max(bridges[0][2], bridges[1][2]);
-        } else if (!doBridgesCross(bridges[0], bridges[1])) {
+        } else if (!doBridgesCross(bridges[0], bridges[1])) { //if bridges don't cross
             return bridges[0][2] + bridges[1][2];
         }
         return std::max(bridges[0][2], bridges[1][2]);
 
-    } else {
+    } else { // given and arbitrary amount of bridges
         std::vector<Bridges> allowedBridgeCombos = bridgesToBuild(bridges);
 
         int maxToll = 0;
@@ -39,12 +44,14 @@ int build(int w, int e, const Bridges &bridges) {
     }
 }
 
-
+// std::vector<Bridge> allPossibleBridgeCombinations
+// given a list of Bridges and a list of lists of bridges generate all subsets of bridges
+//   and return them
 std::vector<Bridges> allPossibleBridgeCombinations(const Bridges &bridges, std::vector<Bridges> &allBridgeCombos) {
     Bridges bridgeCombo;
     for(int index = 0; index < std::pow(2, bridges.size()); index++) {
         for(int i = 0; i < bridges.size(); i++) {
-            if(index & (1 << i))
+            if(index & (1 << i))  // Checks if the ith element is set
                 bridgeCombo.push_back(bridges[i]);
         }
         allBridgeCombos.push_back(bridgeCombo);
@@ -53,18 +60,20 @@ std::vector<Bridges> allPossibleBridgeCombinations(const Bridges &bridges, std::
     return allBridgeCombos;
 }
 
-
+//std::vector<Bridges> bridgesToBuild
+// given a list of bridges
+//  return a list of non-crossing bridges
 std::vector<Bridges> bridgesToBuild(const Bridges &bridges) {
     std::vector<Bridges> allBridgesCombos;
     std::vector<Bridges> allowedBridgesCombos;
     allPossibleBridgeCombinations(bridges, allBridgesCombos);
 
-    for(const auto &bridgeCombo: allBridgesCombos) {
+    for(const auto &bridgeCombo: allBridgesCombos) { // For each combination of bridges
         for(const auto &firstBridge: bridgeCombo) {
             for(const auto &secondBridge: bridgeCombo) {
-                if(firstBridge != secondBridge) {
-                    if(doBridgesCross(firstBridge, secondBridge)) {
-                        goto EndOfLoop;
+                if(firstBridge != secondBridge) { // If we are not looking at the same bridge
+                    if(doBridgesCross(firstBridge, secondBridge)) { // Compare each bridge in the combo
+                        goto EndOfLoop; // get out of the loop      //   to see if they cross
                     }
                 }
             }
@@ -77,37 +86,18 @@ std::vector<Bridges> bridgesToBuild(const Bridges &bridges) {
     return allowedBridgesCombos;
 }
 
+// bool operator==
+// given two bridges
+//   classify if they are equal or not
 bool operator== (const Bridge &first, const Bridge &second) {
     return (first[0]==second[0] && first[1]==second[1] && first[2]==second[2]);
 }
 
+// bool doBridgesCross
+// given two bridges
+//   classify if they cross or not
 bool doBridgesCross(const Bridge &first, const Bridge &second) {
     return (first[0] < second[0] && first[1] > second[1]) ||
             (first[0] > second[0] && first[1] < second[1]) ||
             first[0] == second[0] || first[1] == second[1];
-}
-
-std::ostream& operator<< (std::ostream& os, const Bridge &bridgeToPrint){
-    os << "{" << bridgeToPrint[0] << ", " << bridgeToPrint[1] << ", ";
-    os << bridgeToPrint[2] << "}";
-    return os;
-}
-
-std::ostream& operator<< (std::ostream& os, const Bridges &bridgesToPrint){
-    for(const auto& bridge: bridgesToPrint) {
-        os << "{" << bridge[0] << ", " << bridge[1] << ", ";
-        os << bridge[2] << "} ";
-    }
-    return os;
-}
-
-std::ostream& operator<< (std::ostream& os, const std::vector<std::tuple<Bridge, Bridge>> &bridgesToPrint){
-    for(const auto& bridges: bridgesToPrint) {
-        os << "{" << std::get<0>(bridges)[0] << ", " << std::get<0>(bridges)[1] << ", ";
-        os << std::get<0>(bridges)[2] << "}";
-        os << " && " << "{" << std::get<1>(bridges)[0]  << ", " << std::get<1>(bridges)[1] << ", ";
-        os << std::get<1>(bridges)[2] << "}";
-        os << "\n\n";
-    }
-    return os;
 }
