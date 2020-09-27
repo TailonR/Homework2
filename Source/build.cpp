@@ -4,9 +4,11 @@
 
 #include <iostream>
 #include <algorithm>
+#include <cmath>
+#include <string>
 #include "../Header/build.h"
 
-int build(int w, int e, const std::vector<Bridge> &bridges) {
+int build(int w, int e, const Bridges &bridges) {
     if (bridges.empty()) {
         return 0;
     } else if (bridges.size() == 1) {
@@ -20,19 +22,11 @@ int build(int w, int e, const std::vector<Bridge> &bridges) {
         return std::max(bridges[0][2], bridges[1][2]);
 
     } else {
-        std::vector<std::tuple<Bridge, Bridge>> crossing;
-
-        std::cout << "Possible Bridges:\n" << bridges << "\n" << std::endl;
-
-        crossingBridges(bridges, crossing);
-        std::vector<std::vector<Bridge>> allowedBridgeCombos = bridgesToBuild(w, e, bridges);
-
-        std::cout << "Crossing: \n" << crossing << std::endl;
+        std::vector<Bridges> allowedBridgeCombos = bridgesToBuild(bridges);
 
         int maxToll = 0;
         for(const auto &bridgeCombo: allowedBridgeCombos) {
             int toll = 0;
-            std::cout << "Bridges: \n" << bridgeCombo << "\n" << std::endl;
             for(const auto &bridge: bridgeCombo) {
                 toll += bridge[2];
             }
@@ -45,29 +39,44 @@ int build(int w, int e, const std::vector<Bridge> &bridges) {
     }
 }
 
-std::vector<std::vector<Bridge>> bridgesToBuild(int w, int e, const std::vector<Bridge> &bridges) {
-//    Bridge maxSingleBridge = singleBridgeMaxToll(bridges);
-    std::vector<std::vector<Bridge>> allNonCrossingBridgesCombos;
-    std::vector<Bridge> nonCrossingBridgeCombos;
-//    bool crossing = false;
-    for(const auto& firstBridge: bridges) {
-        nonCrossingBridgeCombos.clear();
-        nonCrossingBridgeCombos.push_back(firstBridge);
-        for(const auto& secondBridge: bridges) {
-            if(firstBridge != secondBridge) {
-                if(!doBridgesCross(firstBridge, secondBridge)) {
-                    nonCrossingBridgeCombos.push_back(secondBridge);
-                    if(nonCrossingBridgeCombos.size() == std::min(w,e)-1) {
-                        allNonCrossingBridgesCombos.push_back(nonCrossingBridgeCombos);
-                        nonCrossingBridgeCombos.clear();
+
+std::vector<Bridges> allPossibleBridgeCombinations(const Bridges &bridges, std::vector<Bridges> &allBridgeCombos) {
+    Bridges bridgeCombo;
+    for(int index = 0; index < std::pow(2, bridges.size()); index++) {
+        for(int i = 0; i < bridges.size(); i++) {
+            if(index & (1 << i))
+                bridgeCombo.push_back(bridges[i]);
+        }
+        allBridgeCombos.push_back(bridgeCombo);
+        bridgeCombo.clear();
+    }
+    return allBridgeCombos;
+}
+
+
+std::vector<Bridges> bridgesToBuild(const Bridges &bridges) {
+    std::vector<Bridges> allBridgesCombos;
+    std::vector<Bridges> allowedBridgesCombos;
+    allPossibleBridgeCombinations(bridges, allBridgesCombos);
+
+    for(const auto &bridgeCombo: allBridgesCombos) {
+        for(const auto &firstBridge: bridgeCombo) {
+            for(const auto &secondBridge: bridgeCombo) {
+                if(firstBridge != secondBridge) {
+                    if(doBridgesCross(firstBridge, secondBridge)) {
+                        goto EndOfLoop;
                     }
                 }
             }
         }
-        allNonCrossingBridgesCombos.push_back(nonCrossingBridgeCombos);
+        allowedBridgesCombos.push_back(bridgeCombo);
+
+        EndOfLoop:
+        ;
     }
-    return allNonCrossingBridgesCombos;
+    return allowedBridgesCombos;
 }
+
 bool operator== (const Bridge &first, const Bridge &second) {
     return (first[0]==second[0] && first[1]==second[1] && first[2]==second[2]);
 }
@@ -77,34 +86,6 @@ bool doBridgesCross(const Bridge &first, const Bridge &second) {
             (first[0] > second[0] && first[1] < second[1]) ||
             first[0] == second[0] || first[1] == second[1];
 }
-bool doBridgesStartOrEndTheSame(const Bridge &first, const Bridge &second) {
-    return (first[0] == second[0] || first[1] > second[1]) ||
-            (first[0] > second[0] && first[1] < second[1]);
-}
-
-void crossingBridges(const std::vector<Bridge> &bridges, std::vector<std::tuple<Bridge, Bridge>> &pairsOfBridges) {
-    for(const auto& firstBridge: bridges) {
-        for(const auto& secondBridge: bridges) {
-            if (firstBridge != secondBridge) {
-                if (doBridgesCross(firstBridge, secondBridge)) {
-                    pairsOfBridges.emplace_back(firstBridge, secondBridge);
-                }
-            } else {
-
-            }
-        }
-    }
-}
-
-Bridge singleBridgeMaxToll(const std::vector<Bridge> &bridges) {
-    int toll = 0;
-    for (const auto& bridge: bridges) {
-        if (bridge[2] > toll) {
-            toll = bridge[2];
-        }
-    }
-    return *std::find_if(bridges.begin(), bridges.end(), [&toll](const Bridge& i) { return i[2] == toll; });
-}
 
 std::ostream& operator<< (std::ostream& os, const Bridge &bridgeToPrint){
     os << "{" << bridgeToPrint[0] << ", " << bridgeToPrint[1] << ", ";
@@ -112,7 +93,7 @@ std::ostream& operator<< (std::ostream& os, const Bridge &bridgeToPrint){
     return os;
 }
 
-std::ostream& operator<< (std::ostream& os, const std::vector<Bridge> &bridgesToPrint){
+std::ostream& operator<< (std::ostream& os, const Bridges &bridgesToPrint){
     for(const auto& bridge: bridgesToPrint) {
         os << "{" << bridge[0] << ", " << bridge[1] << ", ";
         os << bridge[2] << "} ";
