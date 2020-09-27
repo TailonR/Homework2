@@ -1,4 +1,4 @@
-# Solution to Homework2 eCS411 UAF
+# Solution to Homework2 CS411 UAF
 This solution finds the optimal solution to the problem via exhaustive search
 
 This project was developed in Clion
