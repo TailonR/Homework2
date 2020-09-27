@@ -3,7 +3,7 @@ This solution finds the optimal solution to the problem via exhaustive search
 
 This project was developed in Clion
 
-#The Problem
+# The Problem
 As stated in the Assignment_Instructions, the goal is to find the combination of 
 bridges to build between cities where:
 *Item No bridges cross
@@ -12,7 +12,7 @@ bridges to build between cities where:
 
 The definition for bridges crossing are if a < c && b > d or c < a && d > b
 
-#Key Highlights
+# Key Highlights
 The biggest issue I had to tackle, that once solved everything fell into place, 
 was getting the correct combination of bridges to build.
 This was done with two functions:
