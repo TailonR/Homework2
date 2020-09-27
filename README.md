@@ -61,4 +61,4 @@ std::vector<Bridges> bridgesToBuild(const Bridges &bridges) {
 This function uses the result of allPossibleBridgeCombinations and finds allowed combinations using the function doBridgesCross.
 
 # License
-[MIt](https://choosealicense.com/licenses/mit/)
+[MIT](https://choosealicense.com/licenses/mit/)
