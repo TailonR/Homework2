@@ -47,6 +47,8 @@ int build(int w, int e, const Bridges &bridges) {
 // std::vector<Bridge> allPossibleBridgeCombinations
 // given a list of Bridges and a list of lists of bridges generate all subsets of bridges
 //   and return them
+// This function is derived form the solution provide in this article
+//    https://afteracademy.com/blog/print-all-subsets-of-a-given-set
 std::vector<Bridges> allPossibleBridgeCombinations(const Bridges &bridges, std::vector<Bridges> &allBridgeCombos) {
     Bridges bridgeCombo;
     for(int index = 0; index < std::pow(2, bridges.size()); index++) {
