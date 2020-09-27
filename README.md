@@ -32,8 +32,8 @@ std::vector<Bridges> allPossibleBridgeCombinations(const Bridges &bridges, std::
     return allBridgeCombos;
 }
 ```
-This function uses bit operations to get all possible combinations of bridges. We needed to have all subsets of the 
-given bridges in order know which combinations of bridges are allowed. A subtle difference, but I nneded to understand 
+This function uses bit operations to get all possible combinations of bridges. I needed to have all subsets of the 
+given bridges in order know which combinations of bridges are allowed. A subtle difference, but I neded to understand 
 that I am dealing with subsets of bridges and not simply a combination of bridges.
 
 ```c++
