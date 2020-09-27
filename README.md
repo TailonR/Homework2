@@ -6,9 +6,9 @@ This project was developed in Clion
 # The Problem
 As stated in the Assignment_Instructions, the goal is to find the combination of 
 bridges to build between cities where:
-* Item No bridges cross
-* Item No city can be reached by two bridges
-* Item The toll can be charded the maximum amount
+* No bridges cross
+* No city can be reached by two bridges
+* The toll can be charded the maximum amount
 
 The definition for bridges crossing are if a < c && b > d or c < a && d > b
 
