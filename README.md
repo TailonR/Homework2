@@ -12,7 +12,7 @@ bridges to build between cities where:
 * No city can be reached by two bridges
 * The toll can be charged the maximum amount
 
-The definition for bridges crossing are if a < c && b > d or c < a && d > b
+The definition for bridges crossing are if a < c && b > d or c < a && d > b, with a, b, c, and d being the cities.
 
 # Key Highlights
 The biggest issue I had to tackle, that once solved everything fell into place, 
